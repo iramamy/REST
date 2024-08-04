@@ -13,6 +13,21 @@ class ModelTest(TestCase):
         """Test use with an email is successful"""
         email = "test@example.com"
         password = "pa$$word123_"
-        user = get_user_model().objects.create_user(email=email, password=password)
+        user = get_user_model().objects.create_user(
+            email=email, password=password
+        )  # noqa
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+
+    def test_new_user_email_normalized(self):
+        """Test use email is normalized"""
+        sample_emails = [
+            ["test1@Example.com", "test1@example.com"],
+            ["Test2@ExAmpLe.com", "Test2@example.com"],
+            ["TesT3@EXAMPLE.com", "TesT3@example.com"],
+            ["TEST4@EXAMPLE.com", "TEST4@example.com"],
+        ]
+
+        for email, expected in sample_emails:
+            user = get_user_model().objects.create_user(email, "sample123")
+            self.assertEqual(user.email, expected)
