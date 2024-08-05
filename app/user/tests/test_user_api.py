@@ -99,9 +99,15 @@ class PublicUserAPiTest(TestCase):
     def test_create_token_bad_credentials(self):
         """Test returns error if user enter wrong credentials"""
 
-        create_user(email="testuser@example.com", password="goodpassword")  # noqa
+        create_user(
+            email="testuser@example.com",
+            password="goodpassword",
+        )
 
-        payload = {"email": "testuser@example.com", "password": "wrongpasswrod"}  # noqa
+        payload = {
+            "email": "testuser@example.com",
+            "password": "wrongpasswrod",
+        }
 
         response = self.client.post(TOKEN_USL, payload)
 
@@ -111,7 +117,10 @@ class PublicUserAPiTest(TestCase):
     def test_create_token_blank_password(self):
         """Return error if user enter blank password"""
 
-        payload = {"email": "testuser@example.com", "password": ""}
+        payload = {
+            "email": "testuser@example.com",
+            "password": "",
+        }
 
         response = self.client.post(TOKEN_USL, payload)
 
@@ -133,7 +142,7 @@ class PrivateUserApiTests(TestCase):
         self.user = create_user(
             email="test@example.com",
             password="testpassword123_",
-            name="test name",  # noqa
+            name="test name",
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -143,9 +152,16 @@ class PrivateUserApiTests(TestCase):
 
         response = self.client.get(ME_URL)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data, {"name": self.user.name, "email": self.user.email}
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(
+            response.data,
+            {
+                "name": self.user.name,
+                "email": self.user.email,
+            },
         )
 
     def test_post_me_not_allowed(self):
@@ -154,13 +170,17 @@ class PrivateUserApiTests(TestCase):
         response = self.client.post(ME_URL, {})
 
         self.assertEqual(
-            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED
-        )  # noqa
+            response.status_code,
+            status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
 
     def test_update_user_profile(self):
         """Update profile for authenticated user"""
 
-        payload = {"name": "Updated new name", "password": "newpassword"}
+        payload = {
+            "name": "Updated new name",
+            "password": "newpassword",
+        }
 
         response = self.client.patch(ME_URL, payload)
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # Custom
     "core",
     "user",
+    "recipe",
     # third party
     "rest_framework",
     "drf_spectacular",
