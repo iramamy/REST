@@ -57,8 +57,9 @@ class ModelTest(TestCase):
     def test_create_super_user(self):
         """Test creating a super user"""
         user = get_user_model().objects.create_superuser(
-            "test@example.com", "test123"
-        )  # noqa
+            "test@example.com",
+            "test123",
+        )
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
@@ -87,3 +88,13 @@ class ModelTest(TestCase):
         tag = models.Tag.objects.create(user=user, name="Tag1")
 
         self.assertEqual(f"{tag}", tag.name)
+
+    def test_create_ingredient(self):
+        """Test create ingredient successful"""
+        user = create_user()
+        ingredient = models.Ingredient.objects.create(
+            user=user,
+            name="Ingredient1",
+        )
+
+        self.assertEqual(ingredient.name, f"{ingredient}")
