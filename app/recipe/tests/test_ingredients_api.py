@@ -90,10 +90,23 @@ class PrivateIngredientsAPITests(TestCase):
             user=self.user,
             name="Salt",
         )
+
         payload = {"name": "Sugar"}
         url = detail_url(ingredient_id=ingredient.id)
 
         response = self.client.patch(url, payload)
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
         self.assertEqual(ingredient.name, payload["name"])
+
+    def test_delete_ingredient(self):
+        """Test deleting existing ingredient"""
+
+        ingredient = Ingredient.objects.create(user=self.user, name="Cassava")
+        url = detail_url(ingredient_id=ingredient.id)
+
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        ingredients = Ingredient.objects.filter(user=self.user)
+        self.assertFalse(ingredients.exists())
